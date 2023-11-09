@@ -8878,6 +8878,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2122624139282810957, guid: 849f63c2291f0e74ca5725814afa9f6e, type: 3}
+      propertyPath: m_SortingOrder
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2122624139282810958, guid: 849f63c2291f0e74ca5725814afa9f6e, type: 3}
       propertyPath: m_Name
       value: Ruby
@@ -9181,6 +9185,10 @@ PrefabInstance:
     - target: {fileID: 2897195141515624623, guid: 936a781dc4f84914a8e9d96acfbecdb0, type: 3}
       propertyPath: m_Name
       value: MetalCube
+      objectReference: {fileID: 0}
+    - target: {fileID: 2897195141515624624, guid: 936a781dc4f84914a8e9d96acfbecdb0, type: 3}
+      propertyPath: m_SpriteSortPoint
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2897195141515624625, guid: 936a781dc4f84914a8e9d96acfbecdb0, type: 3}
       propertyPath: m_RootOrder
