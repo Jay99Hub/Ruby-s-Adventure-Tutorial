@@ -7,8 +7,11 @@ public class EnemyController : MonoBehaviour
     public float speed;
     public bool vertical;
     public float changeTime = 3.0f;
+    public AudioClip fixSound;
 
     public ParticleSystem smokeEffect;
+    //public ParticleSystem impactSpark;
+    public GameObject impactSpark;
 
     Rigidbody2D rigidbody2D;
     float timer;
@@ -18,12 +21,14 @@ public class EnemyController : MonoBehaviour
      // this line of code creates a variable called "rubyController" to store information about the RubyController script!
     Animator animator;
 
+    AudioSource audioSource;
     // Start is called before the first frame update
     void Start()
     {
         rigidbody2D = GetComponent<Rigidbody2D>();
         timer = changeTime;
         animator = GetComponent<Animator>();
+        audioSource = GetComponent<AudioSource>();
         GameObject rubyControllerObject = GameObject.FindWithTag("RubyController"); 
         //this line of code finds the RubyController script by looking for a "RubyController" tag on Ruby
 
@@ -99,15 +104,21 @@ public class EnemyController : MonoBehaviour
         broken = false;
         rigidbody2D.simulated = false;
         //optional if you added the fixed animation
+        //impactSpark.Play();
+        PlaySound(fixSound);
         animator.SetTrigger("Fixed");
 
         smokeEffect.Stop();
          if (rubyController != null)
         {
-            
+                GameObject projectileObject = Instantiate(impactSpark, transform.position, Quaternion.identity);
                 rubyController.ChangeScore(1); //this line of code is increasing Ruby's health by 1!
             
         }
         
+    }
+    public void PlaySound(AudioClip clip)
+    {
+        audioSource.PlayOneShot(clip);
     }
 }

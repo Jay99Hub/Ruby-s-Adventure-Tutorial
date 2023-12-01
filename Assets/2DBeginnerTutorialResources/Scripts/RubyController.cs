@@ -3,27 +3,38 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System;
 using UnityEngine.SceneManagement;
 
 public class RubyController : MonoBehaviour
 {
+    public TextMeshProUGUI cogs;
+    private int cogsValue = 4;
+
     public float speed = 3.0f;
 
     public int maxHealth = 5;
 
     public GameObject projectilePrefab;
-
+    public AudioClip frogSound;
     public AudioClip throwSound;
     public AudioClip hitSound;
+    public AudioClip winSound;
+    public AudioClip loseSound;
     public GameObject healthIncrease;
     public GameObject healthDecrease;
     public TextMeshProUGUI scoreText;
+    public GameObject collectableEffect;
+    public GameObject clockObject;
     public int score = 0;
     public TextMeshProUGUI  gameOverText;
     public TextMeshProUGUI  winGameText;
-    
+    public TextMeshProUGUI timeStartText;
+
     bool gameOver = false;
-    
+    bool timeStop = false;
+    bool soundPlayed = false;
+    bool buttonPressed = false;
 
     public int health { get { return currentHealth; } }
     int currentHealth;
@@ -47,8 +58,9 @@ public class RubyController : MonoBehaviour
         rigidbody2d = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
 
-        currentHealth = maxHealth;
+        cogs.text = "Cogs: " + cogsValue.ToString();
 
+        currentHealth = maxHealth;
         audioSource = GetComponent<AudioSource>();
     }
 
@@ -91,14 +103,46 @@ public class RubyController : MonoBehaviour
                 if (character != null)
                 {
                     character.DisplayDialog();
+                    PlaySound(frogSound);
                 }
             }
         }
+
+        if (timeStop == true)
+        {
+           gameOverText.gameObject.SetActive(true);
+            gameOverText.text = "You lost! Press R to Restart!";
+            if (!soundPlayed)
+            {
+                PlaySound(loseSound);
+                soundPlayed = true;
+            }
+            speed = 0.0f;
+            gameOver = true;
+             if (Input.GetKey(KeyCode.R))
+        {
+
+            if (gameOver == true)
+
+            {
+
+              SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex); // this loads the currently active scene
+
+            }
+
+        }
+        }
+
 
         if (currentHealth == 0)
         {
            gameOverText.gameObject.SetActive(true);
             gameOverText.text = "You lost! Press R to Restart!";
+            if (!soundPlayed)
+            {
+                PlaySound(loseSound);
+                soundPlayed = true;
+            }
             speed = 0.0f;
             gameOver = true;
              if (Input.GetKey(KeyCode.R))
@@ -117,12 +161,51 @@ public class RubyController : MonoBehaviour
 
          if(score == 4){
             winGameText.gameObject.SetActive(true);
+            if (!soundPlayed)
+            {
+                PlaySound(winSound);
+                soundPlayed = true;
+            }
+            
             winGameText.text = "You Win! Game Created By Group 27";
-            
-            
+            Time.timeScale = 0.0f;
+
+
         }
 
-       
+        if (buttonPressed == false)
+        {
+            
+            timeStartText.gameObject.SetActive(true);
+            timeStartText.text = "Play with a timer? Press T, if not press N!";
+            speed = 0.0f;
+            if (Input.GetKeyDown(KeyCode.T))
+            {
+                clockObject.gameObject.SetActive(true);
+                timeStartText.gameObject.SetActive(false);
+                buttonPressed = true;
+                speed = 3.0f;
+                EventManager.OnTimerStart();
+            }
+            else if (Input.GetKeyDown(KeyCode.N))
+            {
+                clockObject.gameObject.SetActive(false);
+                buttonPressed = true;
+                timeStartText.gameObject.SetActive(false);
+                speed = 3.0f;
+            }
+        }
+
+    }
+    
+    private void OnEnable()
+    {
+        EventManager.TimerStop += EventManagerOnTimerStop;
+    }
+
+    private void EventManagerOnTimerStop()
+    {
+        timeStop = true;
     }
 
     void FixedUpdate()
@@ -165,10 +248,17 @@ public class RubyController : MonoBehaviour
        
     }
 
-
+    public void ChangeCogs(int cogsAmount)
+    {
+        cogsValue += cogsAmount;
+        cogs.text = "Cogs: " + cogsValue.ToString();
+        GameObject projectileObject = Instantiate(collectableEffect, rigidbody2d.position + Vector2.up * 0.5f, Quaternion.identity);
+         
+    }
 
     void Launch()
     {
+        if(cogsValue > 0){
         GameObject projectileObject = Instantiate(projectilePrefab, rigidbody2d.position + Vector2.up * 0.5f, Quaternion.identity);
 
         Projectile projectile = projectileObject.GetComponent<Projectile>();
@@ -177,6 +267,10 @@ public class RubyController : MonoBehaviour
         animator.SetTrigger("Launch");
 
         PlaySound(throwSound);
+        cogsValue--;
+        cogs.text = "Cogs: " + cogsValue.ToString();
+    
+        }
     }
 
     public void PlaySound(AudioClip clip)

@@ -150,9 +150,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 1
-  vertical: 0
-  changeTime: 3
+  vertical: 1
+  changeTime: 4
+  fixSound: {fileID: 8300000, guid: e7fa1971a86d60945bb64585c0ac14d5, type: 3}
   smokeEffect: {fileID: 1433919770650191742}
+  impactSpark: {fileID: 8038344524183138613, guid: 0277167a12290af47801444830a2be97, type: 3}
 --- !u!95 &7176436082936402769
 Animator:
   serializedVersion: 5
